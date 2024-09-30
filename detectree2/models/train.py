@@ -517,6 +517,7 @@ def setup_cfg(
     eval_period=100,
     out_dir="./train_outputs",
     resize=True,
+    amp=False,
 ):
     """Set up config object # noqa: D417.
 
@@ -538,6 +539,7 @@ def setup_cfg(
         num_classes: number of classes
         eval_period: number of iterations between evaluations
         out_dir: directory to save outputs
+        amp: Enable mixed precision training in Colab
     """
     cfg = get_cfg()
     cfg.merge_from_file(model_zoo.get_config_file(base_model))
@@ -566,6 +568,7 @@ def setup_cfg(
     cfg.TEST.EVAL_PERIOD = eval_period
     cfg.RESIZE = resize
     cfg.INPUT.MIN_SIZE_TRAIN = 1000
+    cfg.SOLVER.AMP.ENABLED = True
     return cfg
 
 

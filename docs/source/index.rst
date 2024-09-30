@@ -42,7 +42,6 @@ Accurate delineation of individual tree crowns in tropical forests from aerial R
 
    installation
    tutorial
-   tutorial_multi
    contributing
    using-git
    .. _notebooks/contributing_guide

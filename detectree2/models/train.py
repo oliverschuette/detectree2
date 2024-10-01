@@ -518,6 +518,7 @@ def setup_cfg(
     out_dir="./train_outputs",
     resize=True,
     amp=False,
+    solver_steps=False,
 ):
     """Set up config object # noqa: D417.
 
@@ -568,7 +569,9 @@ def setup_cfg(
     cfg.TEST.EVAL_PERIOD = eval_period
     cfg.RESIZE = resize
     cfg.INPUT.MIN_SIZE_TRAIN = 1000
-    cfg.SOLVER.AMP.ENABLED = True
+    cfg.SOLVER.AMP.ENABLED = amp
+    if solver_steps:
+        cfg.SOLVER.STEPS = (3000,)
     return cfg
 
 

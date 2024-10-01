@@ -571,7 +571,7 @@ def setup_cfg(
     cfg.INPUT.MIN_SIZE_TRAIN = 1000
     cfg.SOLVER.AMP.ENABLED = amp
     if solver_steps:
-        cfg.SOLVER.STEPS = (3000,6000,9000,12000,15000)
+        cfg.SOLVER.STEPS = (3000,4000,5000,6000,7000,8000)
     return cfg
 
 

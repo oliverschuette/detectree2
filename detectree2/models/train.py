@@ -519,6 +519,7 @@ def setup_cfg(
     resize=True,
     amp=False,
     solver_steps=False,
+    lr_scheduler = "WarmupMultiStepLR"
 ):
     """Set up config object # noqa: D417.
 
@@ -541,6 +542,7 @@ def setup_cfg(
         eval_period: number of iterations between evaluations
         out_dir: directory to save outputs
         amp: Enable mixed precision training in Colab
+        lr_scheduler: Verwendeter Scheduler
     """
     cfg = get_cfg()
     cfg.merge_from_file(model_zoo.get_config_file(base_model))
@@ -570,7 +572,8 @@ def setup_cfg(
     cfg.RESIZE = resize
     cfg.INPUT.MIN_SIZE_TRAIN = 1000
     cfg.SOLVER.AMP.ENABLED = amp
-    if solver_steps:
+    cfg.SOLVER.LR_SCHEDULER_NAME = lr_scheduler
+    if solver_steps and lr_scheduler == "WarmupMultiStepLR":
         cfg.SOLVER.STEPS = (3000,4000,5000,6000,7000,8000)
     return cfg
 

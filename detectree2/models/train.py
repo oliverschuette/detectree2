@@ -574,7 +574,7 @@ def setup_cfg(
     cfg.SOLVER.AMP.ENABLED = amp
     cfg.SOLVER.LR_SCHEDULER_NAME = lr_scheduler
     if solver_steps and lr_scheduler == "WarmupMultiStepLR":
-        cfg.SOLVER.STEPS = (3000,4000,5000,6000,7000,8000)
+        cfg.SOLVER.STEPS = (2500,3500,4500,5500,6500,7500)
     return cfg
 
 

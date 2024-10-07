@@ -54,6 +54,7 @@ def tile_data(
     tile_width: int = 200,
     tile_height: int = 200,
     dtype_bool: bool = False,
+    nan_threshold: float = 0.9
 ) -> None:
     """Tiles up orthomosaic for making predictions on.
 
@@ -67,6 +68,7 @@ def tile_data(
         tile_width: Tile width in meters
         tile_height: Tile height in meters
         dtype_bool: Flag to edit dtype to prevent black tiles
+        nan_threshold: Ignore tile with over this percentage of completely black or white pxiels
 
     Returns:
         None
@@ -124,9 +126,9 @@ def tile_data(
             sumzero = zero_mask.sum()
             sumnan = nan_mask.sum()
             totalpix = out_img.shape[1] * out_img.shape[2]
-            if sumzero > 0.25 * totalpix:
+            if sumzero > nan_threshold * totalpix:
                 continue
-            elif sumnan > 0.25 * totalpix:
+            elif sumnan > nan_threshold * totalpix:
                 continue
 
             out_meta = data.meta.copy()

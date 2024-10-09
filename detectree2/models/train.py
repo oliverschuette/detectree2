@@ -499,7 +499,7 @@ def load_json_arr(json_path):
 
 
 def setup_cfg(
-    base_model: str = "COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml",
+    base_model: str = "COCO-InstanceSegmentation/mask_rcnn_X_101_32x8d_FPN_3x.yaml",
     trains=("trees_train", ),
     tests=("trees_val", ),
     update_model=None,

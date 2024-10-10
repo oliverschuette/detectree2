@@ -510,7 +510,7 @@ def to_traintest_folders(  # noqa: C901
         if i < len(file_roots) * test_frac:
             test_boxes.append(image_details(file_roots[num[i]]))
             shutil.copy((tiles_dir / file_roots[num[i]]).with_suffix(
-                Path(file_roots[num[i]]).suffix + ".geojson"), out_dir / "test")
+                Path(file_roots[num[i]]).suffix + ".geojson"), out_dir / "test/fold_1") #Added the folder here
         else:
             # copy to train
             train_box = image_details(file_roots[num[i]])

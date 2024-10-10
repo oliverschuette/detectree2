@@ -510,7 +510,7 @@ def to_traintest_folders(  # noqa: C901
         if i < len(file_roots) * test_frac:
             test_boxes.append(image_details(file_roots[num[i]]))
             shutil.copy((tiles_dir / file_roots[num[i]]).with_suffix(
-                Path(file_roots[num[i]]).suffix + ".geojson"), out_dir / "test/fold_1") #Added the folder here
+                Path(file_roots[num[i]]).suffix + ".geojson"), out_dir / "test") #Added the folder here
         else:
             # copy to train
             train_box = image_details(file_roots[num[i]])
@@ -539,6 +539,21 @@ def to_traintest_folders(  # noqa: C901
                 out_dir / f"train/{name}.geojson",  # type: ignore
                 out_dir / f"train/fold_{i + 1}/{name}.geojson",
             )
+
+    # Do the same for the test dataset (does this work)
+    file_names = (out_dir / "test").glob("*.geojson")
+    file_roots = [item.stem for item in file_names]
+    # stemname = Path(filenames[0]).stem.split("_", 1)[0]
+    # indices = [item.split("_", 1)[-1].split(".", 1)[0] for item in filenames]
+    # random.shuffle(indices)
+    ind_split = np.array_split(file_roots, 1)
+
+    Path(out_dir / f"test/fold_1").mkdir(parents=True, exist_ok=True)
+    for name in ind_split[i]:
+        shutil.move(
+            out_dir / f"test/{name}.geojson",  # type: ignore
+            out_dir / f"test/fold_1/{name}.geojson",
+         )
 
 
 if __name__ == "__main__":

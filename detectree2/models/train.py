@@ -447,9 +447,10 @@ def register_train_data(train_location,
             else:
                 MetadataCatalog.get(name + "_" + d).set(thing_classes=classes)
     else:
-        DatasetCatalog.register(name + "_" + "full", lambda d=d: combine_dicts(train_location,
-                                                                               0, "full",
-                                                                               classes=classes, classes_at=classes_at))
+        for d in ["train"]:
+            DatasetCatalog.register(name + "_" + "full", lambda d=d: combine_dicts(train_location,
+                                                                                0, "full",
+                                                                                classes=classes, classes_at=classes_at))
         if classes is None:
             MetadataCatalog.get(name + "_" + "full").set(thing_classes=["tree"])
         else:

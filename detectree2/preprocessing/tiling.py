@@ -181,10 +181,20 @@ def tile_data(
 
             # save this as jpg or png...we are going for png...again, named with the origin of the specific tile
             # here as a naughty method
-            cv2.imwrite(
-                str(out_path_root.with_suffix(out_path_root.suffix + ".png").resolve()),
-                rgb_rescaled,
-            )
+            try:
+                cv2.imwrite(
+                    str(out_path_root.with_suffix(out_path_root.suffix + ".png").resolve()),
+                    rgb_rescaled,
+                )
+            except cv2.error as e:
+                print(f"OpenCV error occurred while saving the image: {e}")
+    
+            except OSError as e:
+                print(f"OS error occurred: {e}")
+    
+            except Exception as e:
+                print(f"An unexpected error occurred: {e}")
+
             if tile_count % 50 == 0:
                 print(f"Processed {tile_count} tiles of {total_tiles} tiles")
 

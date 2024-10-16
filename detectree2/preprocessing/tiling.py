@@ -20,6 +20,7 @@ from fiona.crs import from_epsg  # noqa: F401
 from rasterio.crs import CRS
 from rasterio.io import DatasetReader
 from rasterio.mask import mask
+from rasterio.errors import RasterioIOError
 from shapely.geometry import box
 
 # class img_data(DatasetReader):
@@ -149,11 +150,19 @@ def tile_data(
             # need to fix RGB data or the dtype
             # show(out_img)
             out_tif = out_path_root.with_suffix(out_path_root.suffix + ".tif")
-            with rasterio.open(out_tif, "w", **out_meta) as dest:
-                dest.write(out_img)
 
-            # read in the tile we have just saved
-            clipped = rasterio.open(out_tif)
+
+            # Try catch block to avoid runtime crashes during inference?
+            try:
+                with rasterio.open(out_tif, "w", **out_meta) as dest:
+                    dest.write(out_img)
+
+                # read in the tile we have just saved
+                clipped = rasterio.open(out_tif)
+            except RasterioIOError as e:
+                print(f"Failed to open {img_path}: {e}")
+                continue
+
             # read it as an array
             # show(clipped)
             arr = clipped.read()

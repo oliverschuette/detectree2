@@ -153,15 +153,11 @@ def tile_data(
 
 
             # Try catch block to avoid runtime crashes during inference?
-            try:
-                with rasterio.open(out_tif, "w", **out_meta) as dest:
-                    dest.write(out_img)
+            with rasterio.open(out_tif, "w", **out_meta) as dest:
+                dest.write(out_img)
 
-                # read in the tile we have just saved
-                clipped = rasterio.open(out_tif)
-            except RasterioIOError as e:
-                print(f"Failed to open {img_path}: {e}")
-                continue
+            # read in the tile we have just saved
+            clipped = rasterio.open(out_tif)
 
             # read it as an array
             # show(clipped)

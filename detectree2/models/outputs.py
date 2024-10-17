@@ -260,8 +260,8 @@ def filename_geoinfo(filename, flag: bool = False, raster: DatasetReader = None)
         buffer = parts[3]
         crs = parts[4]
     else:
-        minx = data.bounds[0]
-        miny = data.bounds[1]
+        minx = raster.bounds[0]
+        miny = raster.bounds[1]
         width = 26
         buffer = 13
         crs = 25833

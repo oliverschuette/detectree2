@@ -18,6 +18,9 @@ import pandas as pd
 import pycocotools.mask as mask_util
 import rasterio
 from rasterio.crs import CRS
+from rasterio.io import DatasetReader
+from rasterio.mask import mask
+from rasterio.errors import RasterioIOError
 from shapely.affinity import scale
 from shapely.geometry import Polygon, box, shape
 from shapely.ops import orient
@@ -244,20 +247,28 @@ def project_to_geojson(tiles_path, pred_fold=None, output_fold=None, multi_class
             json.dump(geofile, dest)
 
 
-def filename_geoinfo(filename):
+def filename_geoinfo(filename, flag: bool = False, raster: DatasetReader = None):
     """Return geographic info of a tile from its filename."""
-    parts = os.path.basename(filename).replace(".geojson", "").split("_")
+    
+    if flag == False:
+        parts = os.path.basename(filename).replace(".geojson", "").split("_")
 
-    parts = [int(part) for part in parts[-5:]]  # type: ignore
-    minx = parts[0]
-    miny = parts[1]
-    width = parts[2]
-    buffer = parts[3]
-    crs = parts[4]
+        parts = [int(part) for part in parts[-5:]]  # type: ignore
+        minx = parts[0]
+        miny = parts[1]
+        width = parts[2]
+        buffer = parts[3]
+        crs = parts[4]
+    else:
+        minx = data.bounds[0]
+        miny = data.bounds[1]
+        width = 26
+        buffer = 13
+        crs = 25833
     return (minx, miny, width, buffer, crs)
 
 
-def box_filter(filename, shift: int = 0):
+def box_filter(filename, shift: int = 0, flag: bool = False, raster: DatasetReader = None):
     """Create a bounding box from a file name to filter edge crowns.
 
     Args:
@@ -267,7 +278,7 @@ def box_filter(filename, shift: int = 0):
     Returns:
         gpd.GeoDataFrame: A GeoDataFrame containing the bounding box.
     """
-    minx, miny, width, buffer, crs = filename_geoinfo(filename)
+    minx, miny, width, buffer, crs = filename_geoinfo(filename , flag, raster)
     bounding_box = box_make(minx, miny, width, buffer, crs, shift)
     return bounding_box
 
@@ -296,7 +307,7 @@ def box_make(minx: int, miny: int, width: int, buffer: int, crs, shift: int = 0)
     return geo
 
 # Why is this not working??
-def stitch_crowns(folder: str, shift: int = 1, epsg: int = 0):
+def stitch_crowns(folder: str, shift: int = 1, flag: bool = False, raster: DatasetReader = None):
     """Stitch together predicted crowns.
 
     Args:
@@ -312,10 +323,7 @@ def stitch_crowns(folder: str, shift: int = 1, epsg: int = 0):
     if len(files) == 0:
         raise FileNotFoundError("No geojson files found in folder.")
 
-    if epsg == 0:
-        _, _, _, _, crs = filename_geoinfo(files[0])
-    else:
-        crs = epsg
+    _, _, _, _, crs = filename_geoinfo(files[0], flag, raster)
 
     total_files = len(files)
     crowns_list = []
@@ -326,7 +334,7 @@ def stitch_crowns(folder: str, shift: int = 1, epsg: int = 0):
 
         crowns_tile = gpd.read_file(file)  # This throws a huge amount of warnings fiona closed ring detected
 
-        geo = box_filter(file, shift)
+        geo = box_filter(file, shift, flag, raster)
 
         crowns_tile = gpd.sjoin(crowns_tile, geo, "inner", "within")
 

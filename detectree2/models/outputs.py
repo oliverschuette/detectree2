@@ -296,12 +296,13 @@ def box_make(minx: int, miny: int, width: int, buffer: int, crs, shift: int = 0)
     return geo
 
 
-def stitch_crowns(folder: str, shift: int = 1):
+def stitch_crowns(folder: str, shift: int = 1, epsg: int = 0):
     """Stitch together predicted crowns.
 
     Args:
         folder: Path to folder containing geojson files.
         shift: Number of meters to shift the size of the bounding box in by. This is to avoid edge crowns.
+        epsg: If you want to set the epsg manually
 
     Returns:
         gpd.GeoDataFrame: A GeoDataFrame containing all the crowns.
@@ -311,7 +312,10 @@ def stitch_crowns(folder: str, shift: int = 1):
     if len(files) == 0:
         raise FileNotFoundError("No geojson files found in folder.")
 
-    _, _, _, _, crs = filename_geoinfo(files[0])
+    if epsg == 0:
+        _, _, _, _, crs = filename_geoinfo(files[0])
+    else:
+        crs = epsg
 
     total_files = len(files)
     crowns_list = []

@@ -295,7 +295,7 @@ def box_make(minx: int, miny: int, width: int, buffer: int, crs, shift: int = 0)
     geo = gpd.GeoDataFrame({"geometry": bbox}, index=[0], crs=CRS.from_epsg(crs))
     return geo
 
-
+# Why is this not working??
 def stitch_crowns(folder: str, shift: int = 1, epsg: int = 0):
     """Stitch together predicted crowns.
 
